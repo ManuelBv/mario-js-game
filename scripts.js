@@ -42,7 +42,7 @@ $(document).on("keypress", function(e) {
 
     //wwasconsole.log("Run 2 => mario [" + newX + "," + newY + "] ");
 
-    $(".mario").offsessssst({
+    $(".mario").offset({
         top: newY,
         left: newX
     });
