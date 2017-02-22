@@ -1,46 +1,57 @@
-$(document).on("keypress", function(e) {
+var y = $(".mario").offset().top;
+var x = $(".mario").offset().left;
+var yParent = $(".mario").parent().offset().top;
+var xParent = $(".mario").parent().offset().left;
+var yFParent = yParent + $(".mario").parent().height();
+var xFParent = xParent + $(".mario").parent().width();
+var newY = y,
+    newX = x,
+    s = 20, // step or how many pixels it is moving
+    r = 50, // dimension of Mario square
+    jump = 60, // jump height
+    keys = {}; // track multiple keypress at once
 
-    
-    var y = $(".mario").offset().top;
-    var x = $(".mario").offset().left;
-    var yParent = $(".mario").parent().offset().top;
-    var xParent = $(".mario").parent().offset().left;
-    var yFParent = yParent + $(".mario").parent().height();
-    var xFParent = xParent + $(".mario").parent().width();
-    var newY = y, newX = x, s = 20, r= 50, jump = 60;
+$(document).on("keydown", function(e) {
 
-    var code = e.keyCode;
-    var key = String.fromCharCode(code).toLowerCase();
+    console.clear();
 
-    //console.log("key pressed [" + key + "] with code " + code);
+    y = getY();
+    x = getX();
 
-    switch (key) {
+    var key = getKey(e);
+    keys[key] = true;
+    var keyList = getKeyList(keys);
+    console.log("keys pressed ", keyList);
+
+    switch (keyList) {
         case "w":
-            newY = y - s;
-            break;
-        case "s":
-            newY = y + s;
+            $(".mario").animate({ top: "-=" + jump }, "slow");
+            $(".mario").animate({ top: "+=" + jump }, "slow");
             break;
         case "a":
+            newX = x - s;
+            break;
+        case "wa":
+            newX = x - s;
+            break;
+        case "aw":
             newX = x - s;
             break;
         case "d":
             newX = x + s;
             break;
-        case " ":
-            $(".mario").animate({top: "-=" + jump }, "slow");
-            $(".mario").animate({top: "+=" + jump }, "slow");
+        case "wd":
+            newX = x + s;
+            break;
+        case "dw":
+            newX = x + s;
             break;
         default:
             break;
     }
 
-    if (newY < yParent) { newY = yParent; }
-    if (newY + r > yFParent) { newY = yFParent - r; }
     if (newX < xParent) { newX = xParent; }
     if (newX + r > xFParent) { newX = xFParent - r; }
-
-    //wwasconsole.log("Run 2 => mario [" + newX + "," + newY + "] ");
 
     $(".mario").offset({
         top: newY,
@@ -48,3 +59,36 @@ $(document).on("keypress", function(e) {
     });
 
 });
+
+$(document).on("keyup", function(e) {
+
+    var key = getKey(e);
+    delete keys[key];
+
+});
+
+
+function getKey(e) {
+    var code = e.keyCode;
+    var key = String.fromCharCode(code).toLowerCase();
+    return key;
+}
+
+function getKeyList(keys) {
+    var keyList = "";
+    for (var i in keys) {
+        if (!keys.hasOwnProperty(i)) continue;
+        keyList += i;
+    }
+    return keyList;
+}
+
+function getX() {
+    var x = $(".mario").offset().left;
+    return x;
+}
+
+function getY() {
+    var y = $(".mario").offset().top;
+    return y;
+}
